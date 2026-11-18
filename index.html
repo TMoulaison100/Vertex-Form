@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vertex Form Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f9fc; --paper-line:#dde9f2; --surface:#ffffff; --surface-2:#eef4f9;
+  --ink:#1b2a41; --muted:#56657a; --border:#cfdce8;
+  --ca:#c2255c; --ch:#1864ab; --ck:#2b8a3e;
+  --btn:#1b2a41; --btn-ink:#ffffff; --hl:#ffe066;
+  --good:#2b8a3e; --good-bg:#e7f6ea; --bad:#c92a2a; --bad-bg:#fdeeee;
+  --hint-bg:#fff7d6; --hint-border:#f0d36b;
+  --grid:#e2ebf2; --axis:#7d8ea3; --curve:#7048e8; --vtx:#f08c00;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121a26; --paper-line:#1c2736; --surface:#18222f; --surface-2:#1f2b3a;
+    --ink:#e8eef6; --muted:#a3b1c2; --border:#2e3d50;
+    --ca:#f06595; --ch:#4dabf7; --ck:#51cf66;
+    --btn:#e8eef6; --btn-ink:#121a26; --hl:#8a6d00;
+    --good:#69db7c; --good-bg:#16301f; --bad:#ff8787; --bad-bg:#3a1c1f;
+    --hint-bg:#2e2a14; --hint-border:#6b5d1f;
+    --grid:#243244; --axis:#6c7f96; --curve:#9775fa; --vtx:#ffa94d;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121a26; --paper-line:#1c2736; --surface:#18222f; --surface-2:#1f2b3a;
+  --ink:#e8eef6; --muted:#a3b1c2; --border:#2e3d50;
+  --ca:#f06595; --ch:#4dabf7; --ck:#51cf66;
+  --btn:#e8eef6; --btn-ink:#121a26; --hl:#8a6d00;
+  --good:#69db7c; --good-bg:#16301f; --bad:#ff8787; --bad-bg:#3a1c1f;
+  --hint-bg:#2e2a14; --hint-border:#6b5d1f;
+  --grid:#243244; --axis:#6c7f96; --curve:#9775fa; --vtx:#ffa94d;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0; color:var(--ink);
+  font-family:"Lexend",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  line-height:1.5; font-size:17px;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+  background-size:24px 24px;
+  min-height:100%;
+}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ch);outline-offset:2px;border-radius:8px}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 56px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+.brand small{display:block;font-weight:400;font-size:.8rem;color:var(--muted);letter-spacing:0}
+.streak{background:var(--surface);border:2px solid var(--border);border-radius:999px;padding:4px 12px;font-weight:700;font-size:.95rem;white-space:nowrap}
+.streak.hot{border-color:var(--vtx)}
+
+.panel{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:20px}
+.panel + .panel{margin-top:16px}
+
+.hero{text-align:center;padding:26px 18px 22px}
+.hero h1{margin:0 0 6px;font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.hero p{margin:0 auto;max-width:34em;color:var(--muted)}
+.big-eq{font-weight:800;font-size:clamp(1.6rem,7vw,2.6rem);margin:18px 0 6px;white-space:nowrap;overflow-x:auto}
+.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px;text-align:left}
+.legend div{border-radius:10px;padding:10px 12px;background:var(--surface-2);font-size:.88rem;line-height:1.4}
+.legend b{font-size:1.15rem;display:block}
+.legend .la{border-left:5px solid var(--ca)} .legend .lh{border-left:5px solid var(--ch)} .legend .lk{border-left:5px solid var(--ck)}
+.vrule{margin-top:12px;font-weight:700}
+@media (max-width:540px){.legend{grid-template-columns:1fr}}
+
+.ca{color:var(--ca)} .ch{color:var(--ch)} .ck{color:var(--ck)}
+.eq{font-weight:800;white-space:nowrap}
+
+.missions{display:grid;gap:10px;margin-top:16px}
+.mission{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer}
+.mission:hover{border-color:var(--ink)}
+.mission .num{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.1rem;background:var(--surface-2);border:2px solid var(--border)}
+.mission.done .num{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.mission .txt{flex:1;min-width:0}
+.mission .name{font-weight:700;font-size:1.05rem}
+.mission .desc{color:var(--muted);font-size:.9rem}
+.mission .stars{flex:none;font-size:1.05rem;letter-spacing:2px;white-space:nowrap}
+.tag{display:inline-block;background:var(--hl);color:var(--ink);font-size:.75rem;font-weight:700;border-radius:6px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+.star-on{color:var(--vtx)} .star-off{color:var(--border)}
+
+.foot{margin-top:18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem}
+
+.playbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.back{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:6px 12px;cursor:pointer;font-weight:500}
+.dots{display:flex;gap:6px}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--surface)}
+.dot.done{background:var(--good);border-color:var(--good)}
+.dot.miss{background:var(--vtx);border-color:var(--vtx)}
+.dot.now{border-color:var(--ink);transform:scale(1.2)}
+.mtitle{font-weight:700;margin:0 0 2px;font-size:1rem;color:var(--muted)}
+
+details.cheat{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:8px 14px;margin-bottom:12px}
+details.cheat summary{cursor:pointer;font-weight:700}
+details.cheat .legend{margin-top:10px}
+
+.prompt{font-size:1.2rem;font-weight:700;margin:0 0 10px}
+.eqbox{background:var(--surface-2);border-radius:12px;padding:16px 12px;text-align:center;font-size:clamp(1.5rem,6.5vw,2.2rem);overflow-x:auto;margin-bottom:16px}
+
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.options.one{grid-template-columns:1fr}
+@media (max-width:460px){.options{grid-template-columns:1fr}}
+.opt{min-height:56px;border:2px solid var(--border);border-radius:12px;background:var(--surface);font-size:1.2rem;font-weight:700;cursor:pointer;padding:8px 12px;transition:transform .08s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--good-bg);border-color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);opacity:.75}
+.opt .eq{font-size:1.15rem}
+
+.graph{display:block;width:100%;max-width:360px;margin:6px auto 10px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.graph.plot{cursor:crosshair}
+.bgr{fill:var(--surface)}
+.gl{stroke:var(--grid);stroke-width:1}
+.ax{stroke:var(--axis);stroke-width:1.6}
+.tick{fill:var(--muted);font-size:8.5px;font-family:"Lexend",system-ui,sans-serif}
+.curve{fill:none;stroke:var(--curve);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ref{fill:none;stroke:var(--axis);stroke-width:2;stroke-dasharray:5 5}
+.vtx{fill:var(--vtx);stroke:var(--surface);stroke-width:2}
+.vlabel{fill:var(--ink);font-weight:800;font-size:13px;font-family:"Lexend",system-ui,sans-serif;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.ghost{fill:var(--ch);opacity:.3;pointer-events:none}
+.pick{fill:var(--ch);stroke:var(--surface);stroke-width:2;pointer-events:none}
+.pick.bad{fill:var(--bad)}
+.pick.good{fill:var(--vtx)}
+.picked{text-align:center;font-weight:700;min-height:1.6em;margin-bottom:8px}
+.graphnote{text-align:center;color:var(--muted);font-size:.85rem;margin-top:-4px}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;font-size:1.05rem;cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghostbtn{background:var(--surface);color:var(--ink);border:2px solid var(--border);padding:10px 16px}
+.btn.next{margin-left:auto}
+
+.hint{background:var(--hint-bg);border:2px solid var(--hint-border);border-radius:12px;padding:10px 14px;margin-top:12px}
+.fb{border-radius:12px;padding:12px 14px;margin-top:14px;border:2px solid}
+.fb.good{background:var(--good-bg);border-color:var(--good)}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb strong{display:block;font-size:1.05rem;margin-bottom:2px}
+.pop{animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.pop{animation:none}.opt{transition:none}}
+
+.result{text-align:center}
+.result .bigstars{font-size:2.6rem;letter-spacing:6px;margin:6px 0}
+.result h2{margin:4px 0;font-size:1.6rem}
+.result p{color:var(--muted);margin:6px auto;max-width:30em}
+.result .actions{justify-content:center}
+.steps{counter-reset:s;list-style:none;padding:0;margin:16px 0 0;text-align:left}
+.steps li{counter-increment:s;position:relative;padding:10px 12px 10px 52px;background:var(--surface-2);border-radius:10px;margin-bottom:8px}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:10px;width:28px;height:28px;border-radius:50%;background:var(--btn);color:var(--btn-ink);display:grid;place-items:center;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Vertex Form Quest<small>y = a(x − h)² + k practice</small></div>
+    <div class="streak" id="streak" aria-live="polite">Streak 0</div>
+  </div>
+  <main id="app"></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+const KEY = "vfq-progress-v1";
+const PER = 6;
+const R = 7, W = 320, S = W / (2 * R);
+
+/* ---------- helpers ---------- */
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (lo, hi) => { let v; do { v = ri(lo, hi); } while (v === 0); return v; };
+
+function fmtNum(n){
+  if (n < 0) return "−" + fmtNum(-n);
+  if (n === 0.5) return "½";
+  if (n === 0.25) return "¼";
+  return String(n);
+}
+const pt = (x, y) => `(${fmtNum(x)}, ${fmtNum(y)})`;
+
+function eq(a, h, k){
+  const A = a === 1 ? "" : a === -1 ? "−" : fmtNum(a);
+  const aPart = A ? `<span class="ca">${A}</span>` : "";
+  const core = h === 0 ? "x²" : `(x ${h > 0 ? "−" : "+"} <span class="ch">${Math.abs(h)}</span>)²`;
+  const kPart = k === 0 ? "" : ` ${k > 0 ? "+" : "−"} <span class="ck">${Math.abs(k)}</span>`;
+  return `<span class="eq">y = ${aPart}${core}${kPart}</span>`;
+}
+const inside = h => h > 0 ? `(x − ${h})` : `(x + ${-h})`;
+
+const PRAISE = ["Nice work!", "You got it!", "Exactly right!", "Nailed it!", "Spot on!", "Look at you go!"];
+const RETRY = ["Not quite — you’ve got this.", "Close! Take another look.", "Good try. One more look.", "Almost — try again."];
+
+/* ---------- graph drawing ---------- */
+const X = x => +((x + R) * S).toFixed(2);
+const Y = y => +((R - y) * S).toFixed(2);
+let clipN = 0;
+
+function curvePath(a, h, k){
+  let d = "";
+  for (let i = 0; i <= 140; i++) {
+    const x = -R + i * 0.1;
+    let y = a * (x - h) * (x - h) + k;
+    y = Math.max(-R - 3, Math.min(R + 3, y));
+    d += (i ? "L" : "M") + X(x) + " " + Y(y) + " ";
+  }
+  return d;
+}
+function vertexMark(h, k, a, label){
+  let s = `<circle class="vtx" cx="${X(h)}" cy="${Y(k)}" r="6.5"/>`;
+  if (label) {
+    let ty = a > 0 ? Y(k) + 24 : Y(k) - 13;
+    if (ty > W - 4) ty = Y(k) - 13;
+    if (ty < 14) ty = Y(k) + 24;
+    let tx = X(h), anchor = "middle";
+    if (h <= -5) { anchor = "start"; tx = X(h) - 6; }
+    if (h >= 5) { anchor = "end"; tx = X(h) + 6; }
+    s += `<text class="vlabel" x="${tx}" y="${ty}" text-anchor="${anchor}">${pt(h, k)}</text>`;
+  }
+  return s;
+}
+function graphSVG(o){
+  o = o || {};
+  const id = "clip" + (clipN++);
+  let s = `<svg class="graph${o.plot ? " plot" : ""}" ${o.plot ? 'id="plotSvg"' : ""} viewBox="0 0 ${W} ${W}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${o.aria || "Coordinate grid"}">`;
+  s += `<defs><clipPath id="${id}"><rect x="0" y="0" width="${W}" height="${W}"/></clipPath></defs>`;
+  s += `<rect class="bgr" x="0" y="0" width="${W}" height="${W}" rx="10"/>`;
+  for (let i = -R + 1; i <= R - 1; i++) {
+    if (i === 0) continue;
+    s += `<line class="gl" x1="${X(i)}" y1="0" x2="${X(i)}" y2="${W}"/><line class="gl" x1="0" y1="${Y(i)}" x2="${W}" y2="${Y(i)}"/>`;
+  }
+  s += `<line class="ax" x1="0" y1="${Y(0)}" x2="${W}" y2="${Y(0)}"/><line class="ax" x1="${X(0)}" y1="0" x2="${X(0)}" y2="${W}"/>`;
+  for (let i = -R + 1; i <= R - 1; i++) {
+    if (i === 0) continue;
+    s += `<text class="tick" x="${X(i)}" y="${Y(0) + 12}" text-anchor="middle">${fmtNum(i)}</text>`;
+    s += `<text class="tick" x="${X(0) - 4}" y="${Y(i) + 3}" text-anchor="end">${fmtNum(i)}</text>`;
+  }
+  s += `<g clip-path="url(#${id})">`;
+  if (o.ref) s += `<path class="ref" d="${curvePath(1, o.h, o.k)}"/>`;
+  if (o.a != null) s += `<path class="curve" d="${curvePath(o.a, o.h, o.k)}"/>`;
+  s += `</g>`;
+  if (o.dot) s += vertexMark(o.h, o.k, o.a, o.label);
+  if (o.plot) s += `<g id="plotLayer" clip-path="url(#${id})"></g><g id="plotMarks"></g><circle id="ghost" class="ghost" r="7" cx="-50" cy="-50"/><circle id="pick" class="pick" r="7.5" cx="-50" cy="-50"/>`;
+  return s + `</svg>`;
+}
+
+/* ---------- question generators ---------- */
+function buildOptions(correctV, distractors, generic){
+  const seen = new Set([fmtNum(correctV)]);
+  const out = [{ label: fmtNum(correctV), correct: true }];
+  for (const d of distractors) {
+    const L = fmtNum(d.v);
+    if (seen.has(L) || out.length >= 4) continue;
+    seen.add(L); out.push({ label: L, why: d.why });
+  }
+  let guard = 0;
+  while (out.length < 4 && guard++ < 60) {
+    const v = nz(-6, 6), L = fmtNum(v);
+    if (seen.has(L)) continue;
+    seen.add(L); out.push({ label: L, why: generic });
+  }
+  return shuffle(out);
+}
+
+function genParts(){
+  const parts = shuffle(["h", "h", "k", "k", "a", "a"]);
+  return parts.map((p, idx) => {
+    let a = pick([2, -2, 3, -3, 0.5, -0.5, 4, -4]);
+    if (p === "a" && idx % 2 === 0) a = pick([1, -1]);
+    if (p !== "a" && Math.random() < 0.3) a = pick([1, -1]);
+    const h = nz(-6, 6), k = nz(-6, 6);
+    const q = { type: "mc", eq: eq(a, h, k) };
+    if (p === "h") {
+      q.prompt = `What is the value of <span class="ch">h</span>?`;
+      q.options = buildOptions(h, [
+        { v: -h, why: `Watch the sign! The form is (x <b>−</b> h), so the sign flips. ${inside(h)} means h = ${fmtNum(h)}.` },
+        { v: k, why: `That’s k, the number added or subtracted at the end. h lives inside the parentheses with x.` },
+        { v: a, why: `That’s a, the number out front. h lives inside the parentheses with x.` }
+      ], `h is the number inside the parentheses with x. Try the hint!`);
+      q.hint = `Find the number in the parentheses with x. Because the form is (x − h), h has the <b>opposite</b> sign of what you see.`;
+      q.explain = h > 0
+        ? `${inside(h)} matches (x − h) exactly, so h = ${h}.`
+        : `${inside(h)} is the same as (x − (${fmtNum(h)})), so h = ${fmtNum(h)}.`;
+    } else if (p === "k") {
+      q.prompt = `What is the value of <span class="ck">k</span>?`;
+      q.options = buildOptions(k, [
+        { v: -k, why: `k keeps the sign you see. The equation ends in ${k > 0 ? "+" : "−"} ${Math.abs(k)}, so think about what that sign tells you.` },
+        { v: h, why: `That’s h, which lives inside the parentheses. k is the number at the very end.` },
+        { v: a, why: `That’s a, the number out front. k is the number at the very end.` }
+      ], `k is the number added or subtracted at the very end. Try the hint!`);
+      q.hint = `k is the number at the very end of the equation. Unlike h, k <b>keeps</b> its sign.`;
+      q.explain = `The equation ends in ${k > 0 ? "+" : "−"} ${Math.abs(k)}, so k = ${fmtNum(k)}.`;
+    } else {
+      q.prompt = `What is the value of <span class="ca">a</span>?`;
+      const dis = [
+        { v: -a, why: `Keep the sign of a. Is there a minus sign in front of the parentheses?` },
+        { v: h, why: `That’s h, which lives inside the parentheses. a is the number in front.` },
+        { v: k, why: `That’s k, the number at the end. a is the number in front.` }
+      ];
+      if (Math.abs(a) === 1) dis.unshift({ v: 0, why: `No number showing doesn’t mean zero. If a were 0, there would be no x² at all! An invisible 1 is there.` });
+      q.options = buildOptions(a, dis, `a is the number multiplied in front of the parentheses. Try the hint!`);
+      q.hint = `a is the number in front of the parentheses. If you see nothing there, a = 1. If you see just a minus sign, a = −1.`;
+      q.explain = a === 1 ? `No number in front means an invisible 1, so a = 1.`
+        : a === -1 ? `Just a minus sign in front means a = −1.`
+        : `The number in front is ${fmtNum(a)}, so a = ${fmtNum(a)}.`;
+    }
+    return q;
+  });
+}
+
+function genVertex(){
+  const out = [];
+  for (let i = 0; i < PER; i++) {
+    const a = pick([1, -1, 2, -2, 0.5, -0.5, 3]);
+    let h = nz(-5, 5), k = nz(-5, 5);
+    if (Math.abs(h) === Math.abs(k)) k = k > 0 ? k - (k === 1 ? -1 : 1) : k + 1 || 2;
+    if (k === 0) k = 2;
+    const seen = new Set([pt(h, k)]);
+    const opts = [{ label: pt(h, k), correct: true }];
+    const dis = [
+      { x: -h, y: k, why: `So close! The y is right, but h flips sign. ${inside(h)} means h = ${fmtNum(h)}.` },
+      { x: k, y: h, why: `Order matters: the vertex is (h, k), with h first. h goes left/right, k goes up/down.` },
+      { x: h, y: -k, why: `The x is right! But k keeps its sign. Look at the number at the end again.` },
+      { x: -h, y: -k, why: `Only h flips its sign. k stays exactly as you see it.` }
+    ];
+    for (const d of shuffle(dis)) {
+      const L = pt(d.x, d.y);
+      if (seen.has(L) || opts.length >= 4) continue;
+      seen.add(L); opts.push({ label: L, why: d.why });
+    }
+    out.push({
+      type: "mc", prompt: "What is the vertex of this parabola?", eq: eq(a, h, k),
+      options: shuffle(opts),
+      hint: `The vertex is the point (h, k). Remember: h flips the sign you see, k keeps it.`,
+      explain: `h = ${fmtNum(h)} and k = ${fmtNum(k)}, so the vertex is ${pt(h, k)}. Here it is on the graph:`,
+      graphAfter: { a, h, k, dot: true, label: true }
+    });
+  }
+  return out;
+}
+
+function genShape(){
+  const kinds = shuffle(["dir", "dir", "dir", "narrow", "wide", "same"]);
+  return kinds.map(kind => {
+    let a;
+    if (kind === "dir") a = pick([1, -1, 2, -2, 3, -3, 0.5, -0.5, -4]);
+    else if (kind === "narrow") a = pick([2, -2, 3, -3, 4, -4]);
+    else if (kind === "wide") a = pick([0.5, -0.5, 0.25, -0.25]);
+    else a = pick([1, -1]);
+    const h = ri(-3, 3), k = ri(-3, 3);
+    const abs = Math.abs(a);
+    const q = { type: "mc", eq: eq(a, h, k), graphAfter: { a, h, k, dot: true, ref: kind !== "dir" } };
+    if (kind === "dir") {
+      const up = a > 0;
+      q.prompt = "Does this parabola open up or down?";
+      q.options = [
+        { label: "Opens up ∪", correct: up, why: `Check the sign of a. Is the number in front positive or negative?` },
+        { label: "Opens down ∩", correct: !up, why: `Check the sign of a. Is the number in front positive or negative?` }
+      ];
+      q.hint = `Look only at the <b>sign</b> of a. Positive a opens up (a smile). Negative a opens down (a frown).`;
+      q.explain = `a = ${fmtNum(a)} is ${up ? "positive" : "negative"}, so it opens ${up ? "up" : "down"}.`;
+    } else {
+      const ans = abs > 1 ? "narrow" : abs < 1 ? "wide" : "same";
+      const signNote = a < 0 ? ` The minus sign flips it upside down, but doesn’t change the width.` : ``;
+      q.prompt = `Compared to y = x², is this parabola narrower, wider, or the same width?`;
+      q.options = [
+        { label: "Narrower", correct: ans === "narrow", why: `Narrower happens when |a| is bigger than 1. Is it here?${signNote}` },
+        { label: "Wider", correct: ans === "wide", why: `Wider happens when |a| is between 0 and 1, like ½. Is it here?${signNote}` },
+        { label: "Same width", correct: ans === "same", why: `Same width only happens when |a| is exactly 1.${signNote}` }
+      ];
+      q.hint = `Ignore the sign and look at the size of a. Bigger than 1 → narrower. Between 0 and 1 → wider. Exactly 1 → same.`;
+      q.explain = `|a| = ${fmtNum(abs)}${abs > 1 ? " is bigger than 1, so the graph is stretched and narrower" : abs < 1 ? " is between 0 and 1, so the graph is squished and wider" : " is exactly 1, so it’s the same width"}.${signNote} The dashed curve is the y = x² shape for comparison.`;
+    }
+    return q;
+  });
+}
+
+function genPlot(){
+  const out = [];
+  for (let i = 0; i < PER; i++) {
+    const a = pick([1, -1, 2, -2, 0.5, -0.5]);
+    const h = i === 3 ? 0 : nz(-5, 5);
+    const k = i === 5 ? 0 : nz(-5, 5);
+    out.push({
+      type: "plot", prompt: "Tap the grid to plot the vertex.", eq: eq(a, h, k), a, h, k,
+      hint: `The vertex is (h, k). Start at the origin. Move left or right to x = h, then up or down to y = k.${h === 0 ? " No number in the parentheses means h = 0." : ""}${k === 0 ? " No number at the end means k = 0." : ""}`,
+      explain: `The vertex is ${pt(h, k)}. Here’s the whole parabola — plotting the vertex is the first step of graphing!`
+    });
+  }
+  return out;
+}
+
+function genMatch(){
+  const out = [];
+  for (let i = 0; i < PER; i++) {
+    const a = pick([1, -1, 2, -2, 0.5, -0.5]);
+    const h = nz(-4, 4), k = nz(-4, 4);
+    const sgn = a > 0 ? 1 : -1, abs = Math.abs(a);
+    const alt = abs === 2 ? sgn * 0.5 : sgn * 2;
+    const dis = shuffle([
+      { a: -a, h, k, why: `That equation opens ${-a > 0 ? "up" : "down"}. Which way does the graph open?` },
+      { a, h: -h, k, why: `That equation’s vertex has x = ${fmtNum(-h)}. Find the vertex on the graph. What’s its x-coordinate?` },
+      { a, h, k: -k, why: `That equation’s vertex has y = ${fmtNum(-k)}. How high or low does the vertex sit?` },
+      { a: alt, h, k, why: `Right vertex and direction, but the wrong width. Compare how steep the sides are to y = x².` }
+    ]).slice(0, 3);
+    const opts = [{ label: eq(a, h, k), correct: true }].concat(dis.map(d => ({ label: eq(d.a, d.h, d.k), why: d.why })));
+    out.push({
+      type: "mc", wide: true, prompt: "Which equation matches this graph?",
+      graphBefore: { a, h, k, dot: true, aria: "Graph of a parabola" },
+      options: shuffle(opts),
+      hint: `Start with the vertex: read its (x, y) from the grid. That gives you h and k. Then ask: up or down? Narrow or wide?`,
+      explain: `Vertex at ${pt(h, k)}, opens ${a > 0 ? "up" : "down"}, and ${abs > 1 ? "narrower than" : abs < 1 ? "wider than" : "the same width as"} y = x².`
+    });
+  }
+  return out;
+}
+
+const LEVELS = [
+  { name: "Spot the parts", desc: "Pick out a, h, and k from an equation.", gen: genParts },
+  { name: "Find the vertex", desc: "Turn h and k into the vertex point.", gen: genVertex },
+  { name: "Shape detective", desc: "Use a to tell up or down, narrow or wide.", gen: genShape },
+  { name: "Plot the vertex", desc: "Tap the vertex on a real coordinate grid.", gen: genPlot },
+  { name: "Match the graph", desc: "Put it all together: which equation fits?", gen: genMatch }
+];
+
+/* ---------- state ---------- */
+function loadBest(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+function saveBest(){ try { localStorage.setItem(KEY, JSON.stringify(state.best)); } catch (e) {} }
+const state = { best: loadBest(), streak: 0, level: 0, q: 0, qs: [], first: 0, tries: 0, solved: false, results: [], picked: null };
+
+const app = document.getElementById("app");
+const streakEl = document.getElementById("streak");
+function setStreak(){
+  streakEl.textContent = state.streak >= 3 ? `🔥 Streak ${state.streak}` : `Streak ${state.streak}`;
+  streakEl.classList.toggle("hot", state.streak >= 3);
+}
+const starStr = n => `<span class="star-on">${"★".repeat(n)}</span><span class="star-off">${"★".repeat(3 - n)}</span>`;
+
+const legendHTML = `
+  <div class="legend">
+    <div class="la"><b class="ca">a</b>Shape. Positive opens up, negative opens down. |a| &gt; 1 is narrower, |a| &lt; 1 is wider.</div>
+    <div class="lh"><b class="ch">h</b>Left or right. The sign flips! (x − 3) means h = 3. (x + 3) means h = −3.</div>
+    <div class="lk"><b class="ck">k</b>Up or down. Keeps its sign. + 2 means k = 2. − 2 means k = −2.</div>
+  </div>
+  <div class="vrule">Vertex = (<span class="ch">h</span>, <span class="ck">k</span>)</div>`;
+const formHTML = `<span class="eq">y = <span class="ca">a</span>(x − <span class="ch">h</span>)² + <span class="ck">k</span></span>`;
+
+/* ---------- screens ---------- */
+function renderHome(){
+  const allDone = LEVELS.every((_, i) => state.best[i]);
+  let html = `<section class="panel hero">
+      <h1>Get ready to graph parabolas</h1>
+      <p>Five short missions, six questions each. Every time you play, you get new questions.</p>
+      <div class="big-eq">${formHTML}</div>
+      ${legendHTML}
+    </section>
+    <nav class="missions" aria-label="Missions">`;
+  LEVELS.forEach((L, i) => {
+    const b = state.best[i] || 0;
+    const start = i === 0 && !b ? `<span class="tag">Start here</span>` : "";
+    html += `<button class="mission${b ? " done" : ""}" data-level="${i}">
+        <span class="num">${i + 1}</span>
+        <span class="txt"><span class="name">${L.name}${start}</span><br><span class="desc">${L.desc}</span></span>
+        <span class="stars" aria-label="${b} of 3 stars">${starStr(b)}</span>
+      </button>`;
+  });
+  html += `</nav>`;
+  if (allDone) html += `<section class="panel" style="margin-top:16px">${readyHTML()}</section>`;
+  html += `<div class="foot"><span>Stars come from answers you get right on the first try. Hints are free.</span><button class="linkbtn" id="reset">Reset my stars</button></div>`;
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+  app.querySelectorAll("[data-level]").forEach(b => b.addEventListener("click", () => startLevel(+b.dataset.level)));
+  document.getElementById("reset").addEventListener("click", () => {
+    if (confirm("Reset all your stars?")) { state.best = {}; saveBest(); renderHome(); }
+  });
+}
+
+function readyHTML(){
+  return `<h2 style="margin:0 0 4px;font-size:1.4rem">You’re ready to graph!</h2>
+    <p style="margin:0;color:var(--muted)">Everything you practiced is a step in graphing a parabola:</p>
+    <ol class="steps">
+      <li><b>Plot the vertex</b> at (<span class="ch">h</span>, <span class="ck">k</span>).</li>
+      <li><b>Check <span class="ca">a</span></b>: does it open up or down? Narrow or wide?</li>
+      <li><b>Step out from the vertex.</b> Go 1 right and 1 left, then move up by <span class="ca">a</span> (down if a is negative). Plot those points and connect with a smooth U.</li>
+    </ol>`;
+}
+
+function startLevel(i){
+  state.level = i; state.q = 0; state.first = 0; state.results = [];
+  state.qs = LEVELS[i].gen();
+  renderQuestion();
+  window.scrollTo(0, 0);
+}
+
+function renderQuestion(){
+  const L = LEVELS[state.level], Q = state.qs[state.q];
+  state.tries = 0; state.solved = false; state.picked = null;
+  let dots = "";
+  for (let i = 0; i < PER; i++) {
+    const r = state.results[i];
+    dots += `<span class="dot${r === true ? " done" : r === false ? " miss" : ""}${i === state.q ? " now" : ""}"></span>`;
+  }
+  let body = "";
+  if (Q.eq) body += `<div class="eqbox">${Q.eq}</div>`;
+  if (Q.graphBefore) body += graphSVG(Q.graphBefore);
+  if (Q.type === "mc") {
+    body += `<div class="options${Q.wide ? " one" : ""}">` +
+      Q.options.map((o, i) => `<button class="opt" data-i="${i}">${o.label}</button>`).join("") + `</div>`;
+  } else {
+    body += graphSVG({ plot: true, aria: "Coordinate grid. Tap a point to plot the vertex." });
+    body += `<div class="picked" id="picked" aria-live="polite">Tap a point on the grid.</div>`;
+  }
+  const last = state.q === PER - 1;
+  app.innerHTML = `
+    <div class="playbar">
+      <button class="back" id="back">← Missions</button>
+      <div class="dots" aria-label="Question ${state.q + 1} of ${PER}">${dots}</div>
+    </div>
+    <details class="cheat"><summary>Cheat sheet</summary>${legendHTML}</details>
+    <section class="panel">
+      <p class="mtitle">Mission ${state.level + 1}: ${L.name} · Question ${state.q + 1} of ${PER}</p>
+      <p class="prompt">${Q.prompt}</p>
+      ${body}
+      <div id="hintBox"></div>
+      <div id="fb" aria-live="polite"></div>
+      <div class="actions">
+        <button class="btn ghostbtn" id="hintBtn">Show hint</button>
+        ${Q.type === "plot" ? `<button class="btn" id="checkBtn" disabled>Check</button>` : ""}
+        <button class="btn next" id="nextBtn" hidden>${last ? "Finish mission" : "Next question"}</button>
+      </div>
+    </section>`;
+  document.getElementById("back").addEventListener("click", renderHome);
+  document.getElementById("hintBtn").addEventListener("click", e => {
+    document.getElementById("hintBox").innerHTML = `<div class="hint pop">💡 ${Q.hint}</div>`;
+    e.currentTarget.disabled = true;
+  });
+  document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+  if (Q.type === "mc") {
+    app.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => answerMC(+b.dataset.i, b)));
+  } else {
+    setupPlot(Q);
+  }
+}
+
+function showGood(extraHTML){
+  state.solved = true;
+  const firstTry = state.tries === 0;
+  if (firstTry) state.first++;
+  state.results[state.q] = firstTry;
+  state.streak++; setStreak();
+  let bonus = "";
+  if (state.streak === 3) bonus = " Three in a row!";
+  else if (state.streak === 5) bonus = " Five in a row. You’re on fire!";
+  else if (state.streak === 10) bonus = " TEN in a row. Unstoppable!";
+  else if (!firstTry) bonus = " You stuck with it — that’s how you learn.";
+  const Q = state.qs[state.q];
+  document.getElementById("fb").innerHTML = `<div class="fb good pop"><strong>${pick(PRAISE)}${bonus}</strong>${Q.explain}${extraHTML || ""}</div>`;
+  const nb = document.getElementById("nextBtn");
+  nb.hidden = false; nb.focus({ preventScroll: true });
+  document.getElementById("hintBtn").disabled = true;
+}
+function showBad(why){
+  state.tries++;
+  state.streak = 0; setStreak();
+  document.getElementById("fb").innerHTML = `<div class="fb bad pop"><strong>${pick(RETRY)}</strong>${why}</div>`;
+}
+
+function answerMC(i, btn){
+  if (state.solved) return;
+  const Q = state.qs[state.q], o = Q.options[i];
+  if (o.correct) {
+    btn.classList.add("correct");
+    app.querySelectorAll(".opt").forEach(b => b.disabled = true);
+    showGood(Q.graphAfter ? graphSVG(Q.graphAfter) : "");
+  } else {
+    btn.classList.add("wrong"); btn.disabled = true;
+    showBad(o.why);
+  }
+}
+
+function setupPlot(Q){
+  const svg = document.getElementById("plotSvg");
+  const ghost = document.getElementById("ghost"), pickC = document.getElementById("pick");
+  const checkBtn = document.getElementById("checkBtn"), label = document.getElementById("picked");
+  const toPoint = e => {
+    const r = svg.getBoundingClientRect();
+    const vx = (e.clientX - r.left) * W / r.width, vy = (e.clientY - r.top) * W / r.height;
+    const clamp = v => Math.max(-R + 1, Math.min(R - 1, v));
+    return { x: clamp(Math.round(vx / S - R)), y: clamp(Math.round(R - vy / S)) };
+  };
+  svg.addEventListener("pointermove", e => {
+    if (state.solved || e.pointerType !== "mouse") return;
+    const p = toPoint(e);
+    ghost.setAttribute("cx", X(p.x)); ghost.setAttribute("cy", Y(p.y));
+  });
+  svg.addEventListener("pointerleave", () => { ghost.setAttribute("cx", -50); });
+  svg.addEventListener("click", e => {
+    if (state.solved) return;
+    const p = toPoint(e);
+    state.picked = p;
+    pickC.setAttribute("cx", X(p.x)); pickC.setAttribute("cy", Y(p.y));
+    pickC.setAttribute("class", "pick");
+    label.textContent = `You picked ${pt(p.x, p.y)}`;
+    checkBtn.disabled = false;
+  });
+  checkBtn.addEventListener("click", () => {
+    if (state.solved || !state.picked) return;
+    const { x, y } = state.picked, { a, h, k } = Q;
+    if (x === h && y === k) {
+      pickC.setAttribute("class", "pick good");
+      ghost.setAttribute("cx", -50);
+      document.getElementById("plotLayer").innerHTML = `<path class="curve" d="${curvePath(a, h, k)}"/>`;
+      document.getElementById("plotMarks").innerHTML = vertexMark(h, k, a, true);
+      checkBtn.disabled = true;
+      showGood("");
+      return;
+    }
+    pickC.setAttribute("class", "pick bad");
+    checkBtn.disabled = true;
+    let why;
+    if (x === -h && y === k && h !== 0) why = `Your y is right! But h flips sign: ${inside(h)} means h = ${fmtNum(h)}. Tap a new point.`;
+    else if (x === k && y === h && h !== k) why = `Looks like x and y got swapped. h is the x-coordinate (left/right), k is the y-coordinate (up/down).`;
+    else if (x === h && y === -k && k !== 0) why = `Your x is right! But k keeps its sign. Check the number at the end again.`;
+    else if (x === h) why = `Your x-coordinate is right! Now check k for the y-coordinate.`;
+    else if (y === k) why = `Your y-coordinate is right! Now check h. Remember, it flips sign.`;
+    else why = `Find h and k first. The vertex is (h, k): move left or right to h, then up or down to k.`;
+    showBad(why);
+  });
+}
+
+function nextQuestion(){
+  state.q++;
+  if (state.q >= PER) return renderResult();
+  renderQuestion();
+  const p = document.querySelector(".panel");
+  if (p && p.getBoundingClientRect().top < 0) p.scrollIntoView({ block: "start" });
+}
+
+function renderResult(){
+  const n = state.first;
+  const stars = n === PER ? 3 : n >= 4 ? 2 : 1;
+  const prev = state.best[state.level] || 0;
+  if (stars > prev) { state.best[state.level] = stars; saveBest(); }
+  const msg = stars === 3 ? "Perfect mission! Every answer right on the first try."
+    : stars === 2 ? "Strong work! Play again for new questions and a shot at 3 stars."
+    : "You finished every question, and that counts. Replay with the cheat sheet open, and watch your stars climb.";
+  const isLast = state.level === LEVELS.length - 1;
+  const allDone = LEVELS.every((_, i) => state.best[i]);
+  app.innerHTML = `<section class="panel result">
+      <p class="mtitle">Mission ${state.level + 1}: ${LEVELS[state.level].name}</p>
+      <div class="bigstars" aria-label="${stars} of 3 stars">${starStr(stars)}</div>
+      <h2>${n} of ${PER} on the first try</h2>
+      <p>${msg}</p>
+      <div class="actions">
+        <button class="btn ghostbtn" id="again">Play again</button>
+        ${!isLast ? `<button class="btn" id="nextLvl">Next mission</button>` : `<button class="btn" id="home">All missions</button>`}
+      </div>
+    </section>
+    ${isLast && allDone ? `<section class="panel">${readyHTML()}</section>` : ""}`;
+  window.scrollTo(0, 0);
+  document.getElementById("again").addEventListener("click", () => startLevel(state.level));
+  const nl = document.getElementById("nextLvl"); if (nl) nl.addEventListener("click", () => startLevel(state.level + 1));
+  const hm = document.getElementById("home"); if (hm) hm.addEventListener("click", renderHome);
+}
+
+setStreak();
+renderHome();
+})();
+</script>
+</body>
+</html>
